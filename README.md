@@ -34,7 +34,7 @@ This system is built with a **monolithic architecture** and includes robust modu
 - Password encryption, reset, and validation
 
 ### 🏨 Room Management
-- Create, edit, delete rooms
+- Create, edit, delete apartments
 - Set room types, amenities, prices, and availability
 - Manage seasonal pricing
 
@@ -62,7 +62,7 @@ This system is built with a **monolithic architecture** and includes robust modu
 
 ### 🧹 Housekeeping
 - Task scheduling
-- Mark rooms as cleaned
+- Mark apartments as cleaned
 - Room condition reporting
 
 ### 🛠️ Maintenance
