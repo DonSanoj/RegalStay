@@ -8,6 +8,9 @@ import ManagerDashboard from './pages/Manager/ManagerDashboard'
 import AdminDashboard from './pages/Admin/AdminDashboard'
 import NotFound from './pages/NotFound'
 import MainLayout from './components/layout/MainLayout'
+import Login from './pages/auth/Login'
+import Signup from './pages/auth/Signup'
+import AdminLogin from './pages/auth/AdminLogin'
 
 function App() {
 
@@ -31,6 +34,32 @@ function App() {
           }
         />
 
+        {/* Auth Pages */}
+        <Route
+          path='/auth/login'
+          element={
+            <MainLayout>
+              <Login />
+            </MainLayout>
+          }
+        />
+        <Route
+          path='/auth/signup'
+          element={
+            <MainLayout>
+              <Signup />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path='/secure-auth/admin-login'
+          element={
+            <AdminLogin />
+          }
+        />
+
+        {/* Dashboard Routes */}
         <Route
           path='/customer'
           element={

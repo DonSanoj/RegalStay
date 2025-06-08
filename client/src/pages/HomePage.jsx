@@ -7,7 +7,7 @@ import { IoIosPin } from "react-icons/io";
 const HomePage = () => {
     return (
         <div className="min-h-screen bg-black text-white">
-            
+
             {/* Hero Section */}
             <section className="relative h-screen flex items-center justify-center bg-black overflow-hidden">
                 <div className="text-center px-4 max-w-4xl animate-fade-in">
@@ -18,10 +18,12 @@ const HomePage = () => {
                         Experience Regalury and comfort in our premium Apartments
                     </p>
                     <div className="space-x-4 animate-slide-up animation-delay-400">
-                        <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                        <button
+                            className="bg-green-500 hover:bg-green-600 text-black font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                        >
                             Book Now
                         </button>
-                        <button className="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                        <button className="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
                             View Apartments
                         </button>
                     </div>
@@ -65,7 +67,7 @@ const HomePage = () => {
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 bg-gradient-to-r from-green-500 to-green-600 relative overflow-hidden">
+            <section className="py-20 bg-gradient-to-r from-green-600 to-green-700 relative overflow-hidden">
                 <div className="container mx-auto px-4 text-center relative z-10">
                     <h2 className="text-4xl font-bold mb-6 text-white animate-fade-in-up">Ready for Your Perfect Stay?</h2>
                     <p className="text-xl mb-8 text-white/90 animate-fade-in-up animation-delay-200">Book your room today and experience Regalury like never before</p>
@@ -77,7 +79,7 @@ const HomePage = () => {
                 <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full animate-pulse"></div>
                 <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-white/5 rounded-full animate-pulse animation-delay-1000"></div>
             </section>
-            
+
             <style jsx>{`
                 @keyframes fade-in {
                     from { opacity: 0; }

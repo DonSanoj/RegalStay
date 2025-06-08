@@ -39,7 +39,7 @@ const Header = () => {
 
                 <div className="flex items-center space-x-4">
                     <Button
-                        className="text-green-500 bg-transparent hover:bg-green-500 hover:text-black transition-colors duration-300 border"
+                        className="text-green-500 bg-transparent hover:bg-green-500 hover:text-black transition-colors duration-300 border border-gray-600"
                         onClick={() => navigate("/auth/login")}
                     >
                         Login
