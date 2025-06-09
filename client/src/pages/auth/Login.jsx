@@ -10,9 +10,28 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import React from 'react'
+import React, { useState } from 'react'
 
 const Login = () => {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [id]: value
+        }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log('Login Data:', formData);
+        // Add your login logic here
+    };
+
     return (
         <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 bg-black">
             <div className="w-full max-w-sm mt-10">
@@ -26,7 +45,7 @@ const Login = () => {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form>
+                            <form onSubmit={handleSubmit}>
                                 <div className="flex flex-col gap-6">
                                     <div className="grid gap-3">
                                         <Label htmlFor="email" className="text-gray-300">Email</Label>
@@ -34,6 +53,8 @@ const Login = () => {
                                             id="email"
                                             type="email"
                                             placeholder="m@example.com"
+                                            value={formData.email}
+                                            onChange={handleInputChange}
                                             required
                                             className="bg-transparent border-gray-700 text-white placeholder:text-gray-500"
                                         />
@@ -48,7 +69,14 @@ const Login = () => {
                                                 Forgot your password?
                                             </a>
                                         </div>
-                                        <Input id="password" type="password" required className="bg-transparent border-gray-700 text-white" />
+                                        <Input 
+                                            id="password" 
+                                            type="password" 
+                                            value={formData.password}
+                                            onChange={handleInputChange}
+                                            required 
+                                            className="bg-transparent border-gray-700 text-white" 
+                                        />
                                     </div>
                                     <div className="flex flex-col gap-3">
                                         <Button type="submit" className="w-full bg-green-500 text-black hover:bg-green-600 font-semibold">
