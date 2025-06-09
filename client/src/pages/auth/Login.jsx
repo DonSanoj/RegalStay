@@ -10,13 +10,19 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useAuthStore } from "@/store/authStore"
+import { toast } from "sonner"
+import { useNavigate } from "react-router-dom"
 
 const Login = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
+
+    const { login, isLoading, error } = useAuthStore();
+    const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
@@ -26,11 +32,41 @@ const Login = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Login Data:', formData);
-        // Add your login logic here
+        
+        if (!formData.email || !formData.password) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        try {
+            await login(formData.email, formData.password);
+            toast.success("Login successful!");
+            navigate('/customer');
+        } catch (error) {
+            console.error("Login error:", error);
+            
+            // Handle different types of errors
+            let errorMessage = "Login failed. Please try again.";
+            
+            if (error.code === 'ERR_NETWORK' || error.message?.includes('Network Error')) {
+                errorMessage = "Cannot connect to server. Please check if the backend server is running on port 8080.";
+            } else if (error.code === 'ERR_CONNECTION_REFUSED') {
+                errorMessage = "Server connection refused. Please ensure the backend server is running.";
+            } else if (error?.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error?.message) {
+                errorMessage = error.message;
+            }
+            
+            toast.error(errorMessage);
+        }
     };
+
+    useEffect(() => {
+        document.title = "Login | RegalStay";
+    }, []);
 
     return (
         <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 bg-black">

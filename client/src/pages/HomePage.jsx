@@ -1,10 +1,15 @@
 import { Button } from '@/components/ui/button';
 import { Star } from 'lucide-react';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FaHotel, FaStar } from 'react-icons/fa6';
 import { IoIosPin } from "react-icons/io";
 
 const HomePage = () => {
+
+    useEffect(() => {
+        document.title = "RegalStay";
+    }, []);
+
     return (
         <div className="min-h-screen bg-black text-white">
 

@@ -9,26 +9,85 @@ const api = axios.create({
     },
 });
 
+// Add request interceptor to include JWT token
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+// Add response interceptor to handle token expiration
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            // Token expired or invalid
+            localStorage.removeItem('token');
+            localStorage.removeItem('isAuthenticated');
+            localStorage.removeItem('userData');
+            
+            // Only redirect if not already on login page
+            if (!window.location.pathname.includes('/auth/login')) {
+                window.location.href = '/auth/login';
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
 export const authService = {
     signup: async (userData) => {
         try {
-            const response = await api.post(`${API_URL}/api/auth/signup`, userData);
+            const response = await api.post('/api/auth/signup', userData);
+            if (response.data.success && response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('isAuthenticated', 'true');
+                localStorage.setItem('userData', JSON.stringify(response.data.user));
+            }
             return response.data;
         } catch (error) {
-            throw error.response?.data || { message: 'Network error occurred' };
+            const errorData = error.response?.data || { message: 'Network error occurred' };
+            throw errorData;
         }
     },
 
     login: async (credentials) => {
         try {
-            const loginData = {
-                usernameOrEmail: credentials.email || credentials.usernameOrEmail,
-                password: credentials.password
-            };
-            const response = await api.post('/api/auth/login', loginData);
+            const response = await api.post('/api/auth/login', credentials);
+            if (response.data.success && response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('isAuthenticated', 'true');
+                localStorage.setItem('userData', JSON.stringify(response.data.user));
+            }
             return response.data;
         } catch (error) {
-            throw error.response?.data || { message: 'Network error occurred' };
+            const errorData = error.response?.data || { message: 'Network error occurred' };
+            throw errorData;
         }
     },
+
+    checkAuth: async () => {
+        try {
+            const response = await api.get('/api/auth/checkAuth');
+            return response.data;
+        } catch (error) {
+            // Clear stored auth data on auth failure
+            authService.logout();
+            const errorData = error.response?.data || { message: 'Network error occurred' };
+            throw errorData;
+        }
+    },
+
+    logout: () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('userData');
+    }
 };
