@@ -4,6 +4,9 @@ import { Label } from '@/components/ui/label'
 import React, { useState } from 'react'
 import { cn } from "@/lib/utils"
 import { Button } from '@/components/ui/button'
+import { useAuthStore } from '@/store/authStore'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -13,6 +16,9 @@ const Signup = () => {
         confirmPassword: ''
     });
 
+    const { signup, isLoading, error } = useAuthStore();
+    const navigate = useNavigate();
+
     const handleInputChange = (e) => {
         const { id, value } = e.target;
         setFormData(prev => ({
@@ -21,10 +27,36 @@ const Signup = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('User Information:', formData);
-        // Add your signup logic here
+        
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Passwords don't match");
+            return;
+        }
+
+        try {
+            await signup(formData.email, formData.username, formData.password);
+            toast.success("Account created successfully!");
+            navigate('/customer');
+        } catch (error) {
+            console.error("Registration error:", error);
+            
+            // Handle different types of errors
+            let errorMessage = "Registration failed. Please try again.";
+            
+            if (error.code === 'ERR_NETWORK' || error.message?.includes('Network Error')) {
+                errorMessage = "Cannot connect to server. Please check if the backend server is running on port 8080.";
+            } else if (error.code === 'ERR_CONNECTION_REFUSED') {
+                errorMessage = "Server connection refused. Please ensure the backend server is running.";
+            } else if (error?.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error?.message) {
+                errorMessage = error.message;
+            }
+            
+            toast.error(errorMessage);
+        }
     };
 
     return (
@@ -88,8 +120,12 @@ const Signup = () => {
                                         />
                                     </div>
                                     <div className="flex flex-col gap-3">
-                                        <Button type="submit" className="w-full bg-green-500 text-black hover:bg-green-600 font-semibold">
-                                            Signup
+                                        <Button 
+                                            type="submit" 
+                                            disabled={isLoading}
+                                            className="w-full bg-green-500 text-black hover:bg-green-600 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {isLoading ? "Creating Account..." : "Signup"}
                                         </Button>
                                     </div>
                                 </div>

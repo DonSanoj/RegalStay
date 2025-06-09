@@ -1,53 +1,67 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { authService } from "../services/authService";
 
-export const useAuthStore = create(
-  persist(
-    (set, get) => ({
-      user: null,
-      isAuthenticated: false,
-      isLoading: false,
-      error: null,
+export const useAuthStore = create((set) => ({
+    user: null,
+    isAuthenticated: false,
+    error: null,
+    isLoading: false,
+    isCheckingAuth: true,
+    message: null,
 
-      setUser: (user) => set({ user, isAuthenticated: true }),
-      
-      setLoading: (isLoading) => set({ isLoading }),
-      
-      setError: (error) => set({ error }),
-      
-      clearError: () => set({ error: null }),
-      
-      logout: () => set({ user: null, isAuthenticated: false, error: null }),
-      
-      signup: async (userData) => {
+    signup: async (email, username, password) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/signup`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-          });
-          
-          const data = await response.json();
-          
-          if (data.success) {
-            set({ user: data.user, isAuthenticated: true, isLoading: false });
-            return { success: true, message: data.message };
-          } else {
-            set({ error: data.message, isLoading: false });
-            return { success: false, message: data.message };
-          }
+            const response = await authService.signup({ email, password, username });
+            set({
+                user: response.user,
+                isAuthenticated: true,
+                isLoading: false,
+            });
         } catch (error) {
-          set({ error: 'Network error occurred', isLoading: false });
-          return { success: false, message: 'Network error occurred' };
+            set({
+                error: error.message || "Error signing up",
+                isLoading: false,
+            });
+            throw error;
         }
-      },
-    }),
-    {
-      name: 'auth-storage',
-      partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
-    }
-  )
-);
+    },
+
+    login: async (email, password) => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await authService.login({ email, password });
+
+            if (response.user.isFlagged) {
+                set({ isLoading: false });
+                return {
+                    error: true,
+                    isFlagged: true,
+                    message: "Your account has been suspended. Please contact support.",
+                };
+            }
+
+            set({
+                user: response.user,
+                isAuthenticated: true,
+                isLoading: false,
+            });
+
+            const redirectPath = localStorage.getItem("redirectAfterLogin");
+            if (redirectPath) {
+                localStorage.removeItem("redirectAfterLogin");
+                window.location.href = redirectPath;
+            } else {
+                window.location.href = `/student/${response.user._id}/${response.user.email}`;
+            }
+
+            return response;
+        } catch (error) {
+            set({
+                error: error.message || "Error logging in",
+                isLoading: false,
+            });
+            throw error;
+        }
+    },
+}));

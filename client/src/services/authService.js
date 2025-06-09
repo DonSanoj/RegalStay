@@ -12,7 +12,7 @@ const api = axios.create({
 export const authService = {
     signup: async (userData) => {
         try {
-            const response = await api.post('/api/auth/signup', userData);
+            const response = await api.post(`${API_URL}/api/auth/signup`, userData);
             return response.data;
         } catch (error) {
             throw error.response?.data || { message: 'Network error occurred' };
@@ -21,7 +21,11 @@ export const authService = {
 
     login: async (credentials) => {
         try {
-            const response = await api.post('/api/auth/login', credentials);
+            const loginData = {
+                usernameOrEmail: credentials.email || credentials.usernameOrEmail,
+                password: credentials.password
+            };
+            const response = await api.post('/api/auth/login', loginData);
             return response.data;
         } catch (error) {
             throw error.response?.data || { message: 'Network error occurred' };
