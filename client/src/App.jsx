@@ -14,6 +14,7 @@ import StaffLogin from './pages/auth/StaffLogin'
 import { useAuthStore } from './store/authStore'
 import { AuthenticatedUser } from './components/AuthenticatedUser'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminLogin from './pages/auth/AdminLogin'
 
 function App() {
   const { isCheckingAuth, checkAuth } = useAuthStore();
@@ -78,7 +79,16 @@ function App() {
       {/* Staff Login - Separate authentication for staff */}
       <Route
         path='/secure-auth/staff-login'
-        element={<StaffLogin />}
+        element={
+          <StaffLogin />
+        }
+      />
+
+      <Route
+        path='/secure-auth/admin-login'
+        element={
+          <AdminLogin />
+        }
       />
 
       {/* Protected Customer Routes with Dynamic URL */}
@@ -120,7 +130,7 @@ function App() {
       />
 
       <Route
-        path='/admin'
+        path='/admin/:adminId/:email'
         element={
           <ProtectedRoute requiredRole="ADMIN">
             <AdminDashboard />
