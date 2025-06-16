@@ -71,8 +71,8 @@ export const adminAuthService = {
         try {
             // Transform field names to match backend AdminLoginDTO expectations
             const transformedCredentials = {
-                adminUsernameOrAdminEmail: credentials.adminEmail || credentials.email || credentials.username,
-                adminPassword: credentials.adminPassword || credentials.password
+                adminUsernameOrAdminEmail: credentials.email,
+                adminPassword: credentials.password
             };
             
             console.log('Transformed login data:', transformedCredentials);

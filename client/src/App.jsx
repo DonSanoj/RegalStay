@@ -16,6 +16,7 @@ import { AuthenticatedUser } from './components/AuthenticatedUser'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminLogin from './pages/auth/AdminLogin'
 import AdminProtectedRoute from './components/AdminProtectedRoute'
+import AuthenticatedAdmin from './components/AuthenticatedAdmin'
 
 function App() {
   const { isCheckingAuth, checkAuth } = useAuthStore();
@@ -88,7 +89,9 @@ function App() {
       <Route
         path='/secure-auth/admin-login'
         element={
-          <AdminLogin />
+          <AuthenticatedAdmin>
+            <AdminLogin />
+          </AuthenticatedAdmin>
         }
       />
 

@@ -42,9 +42,10 @@ export const AuthenticatedUser = ({children}) => {
     if (isAuthenticated && user) {
         if (user.role === 'CUSTOMER') {
             return <Navigate to={`/customer/${user.id}/${encodeURIComponent(user.email)}`} replace />;
-        } else {
-            return <Navigate to={`/${user.role.toLowerCase()}`} replace />;
-        }
+        } 
+        // else {
+            // return <Navigate to={"/auht"} replace />;
+        // }
     }
     
     return children;

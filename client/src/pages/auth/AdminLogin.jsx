@@ -112,8 +112,12 @@ const AdminLogin = () => {
                                         />
                                     </div>
                                     <div className="flex flex-col gap-3">
-                                        <Button type="submit" className="w-full bg-green-500 text-black hover:bg-green-600 font-semibold">
-                                            Login
+                                        <Button 
+                                            type="submit" 
+                                            disabled={isAdminLoading}
+                                            className="w-full bg-green-500 text-black hover:bg-green-600 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {isAdminLoading ? "Logging in..." : "Login"}
                                         </Button>
                                     </div>
                                 </div>

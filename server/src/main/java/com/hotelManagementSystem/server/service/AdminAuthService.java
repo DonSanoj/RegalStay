@@ -160,7 +160,7 @@ public class AdminAuthService {
             response.put("admin", adminData);
         } catch (Exception e) {
             response.put("success", false);
-            response.put("message", "Login failed: " + e.getMessage());
+            response.put("message", "Authentication failed: " + e.getMessage());
         }
 
         return response;
