@@ -17,6 +17,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AdminLogin from './pages/auth/AdminLogin'
 import AdminProtectedRoute from './components/AdminProtectedRoute'
 import AuthenticatedAdmin from './components/AuthenticatedAdmin'
+import AdminLayout from './components/layout/AdminLayout'
 
 function App() {
   const { isCheckingAuth, checkAuth } = useAuthStore();
@@ -138,7 +139,9 @@ function App() {
         path='/admin/:adminId/:email'
         element={
           <AdminProtectedRoute>
-            <AdminDashboard />
+            <AdminLayout>
+              <AdminDashboard />
+            </AdminLayout>
           </AdminProtectedRoute>
         }
       />
