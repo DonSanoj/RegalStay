@@ -108,4 +108,4 @@ export const adminAuthService = {
         localStorage.removeItem("isAdminAuthenticated");
         localStorage.removeItem("adminData");
     },
-}
+};

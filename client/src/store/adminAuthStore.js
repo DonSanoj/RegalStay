@@ -13,19 +13,21 @@ export const useAdminAuthStore = create((set, get) => ({
     adminSignup: async (email, username, password) => {
         set({ isAdminLoading: true, adminError: null });
         try {
-
             const response = await adminAuthService.adminSignup({ email, password, username });
             if (response.success) {
                 set({
                     admin: response.admin,
                     isAdminAuthenticated: true,
                     isAdminLoading: false,
-                    adminToken: response.token,
+                    adminToken: response.adminToken,
                 });
 
+                // Redirect to admin dashboard with dynamic URL
+                window.location.href = `/admin/${response.admin.admin_id}/${encodeURIComponent(response.admin.admin_email)}`;
                 return response;
+            } else {
+                throw new Error(response.message || 'Admin signup failed');
             }
-
         } catch (error) {
             set({
                 adminError: error.message || "Error signing up",
@@ -45,8 +47,11 @@ export const useAdminAuthStore = create((set, get) => ({
                     admin: response.admin,
                     isAdminAuthenticated: true,
                     isAdminLoading: false,
-                    adminToken: response.token,
+                    adminToken: response.adminToken,
                 });
+
+                // Redirect to admin dashboard with dynamic URL
+                window.location.href = `/admin/${response.admin.admin_id}/${encodeURIComponent(response.admin.admin_email)}`;
                 return response;
             } else {
                 throw new Error(response.message || "Login failed");
@@ -64,7 +69,6 @@ export const useAdminAuthStore = create((set, get) => ({
         set({ isAdminCheckingAuth: true, adminError: null });
 
         try {
-
             const adminToken = localStorage.getItem("adminToken");
             if (!adminToken) {
                 set({
@@ -83,7 +87,7 @@ export const useAdminAuthStore = create((set, get) => ({
                     admin: response.admin,
                     isAdminAuthenticated: true,
                     isAdminCheckingAuth: false,
-                    adminToken: response.token,
+                    adminToken: adminToken,
                     adminError: null,
                 });
                 return response;
@@ -93,6 +97,7 @@ export const useAdminAuthStore = create((set, get) => ({
 
         } catch (error) {
             console.error("Error checking admin auth:", error);
+            adminAuthService.adminLogout();
             set({
                 admin: null,
                 isAdminAuthenticated: false,
@@ -102,5 +107,27 @@ export const useAdminAuthStore = create((set, get) => ({
             });
             return { success: false, message: error.message || "Error checking admin authentication" };
         }
+    },
+
+    adminLogout: () => {
+        adminAuthService.adminLogout();
+        set({
+            admin: null,
+            isAdminAuthenticated: false,
+            adminToken: null,
+            adminError: null,
+            adminMessage: null
+        });
+        window.location.href = '/secure-auth/admin-login';
+    },
+
+    // Helper method to get current admin
+    getCurrentAdmin: () => {
+        return get().admin;
+    },
+
+    // Clear admin errors
+    clearAdminError: () => {
+        set({ adminError: null });
     }
 }));

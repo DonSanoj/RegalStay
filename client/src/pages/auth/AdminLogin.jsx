@@ -40,7 +40,7 @@ const AdminLogin = () => {
         try {
             await adminLogin(formData.email, formData.password);
             toast.success("Login successful!");
-            window.location.href = '/admin/dashboard';
+            // Remove manual redirect - let the store handle it
         } catch (error) {
             console.error("Login error:", error);
 

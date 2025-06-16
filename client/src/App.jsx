@@ -15,6 +15,7 @@ import { useAuthStore } from './store/authStore'
 import { AuthenticatedUser } from './components/AuthenticatedUser'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminLogin from './pages/auth/AdminLogin'
+import AdminProtectedRoute from './components/AdminProtectedRoute'
 
 function App() {
   const { isCheckingAuth, checkAuth } = useAuthStore();
@@ -129,12 +130,13 @@ function App() {
         }
       />
 
+      {/* Protected Admin Routes with Dynamic URL */}
       <Route
         path='/admin/:adminId/:email'
         element={
-          <ProtectedRoute requiredRole="ADMIN">
+          <AdminProtectedRoute>
             <AdminDashboard />
-          </ProtectedRoute>
+          </AdminProtectedRoute>
         }
       />
 

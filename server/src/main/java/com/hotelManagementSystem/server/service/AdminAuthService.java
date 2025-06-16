@@ -1,21 +1,23 @@
 package com.hotelManagementSystem.server.service;
 
-import com.hotelManagementSystem.server.dto.AdminAuthDTO;
-import com.hotelManagementSystem.server.model.Admins;
-import com.hotelManagementSystem.server.repository.AdminsRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.hotelManagementSystem.server.dto.AdminAuthDTO;
+import com.hotelManagementSystem.server.model.Admins;
+import com.hotelManagementSystem.server.repository.AdminsRepository;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class AdminAuthService {
@@ -24,7 +26,9 @@ public class AdminAuthService {
     private AdminsRepository adminsRepository;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    // Use the same JWT secret pattern as AuthService for consistency
     private final Key jwtSecret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final long jwtExpiration = 86400000; // 24 hours
 
     public Map<String, Object> adminSignup(AdminAuthDTO adminAuthDTO) {
         Map<String, Object> response = new HashMap<>();
@@ -163,8 +167,6 @@ public class AdminAuthService {
     }
 
     private String generateAdminToken(Admins admin) {
-        // 24 hours
-        long jwtExpiration = 86400000;
         return Jwts.builder()
                 .setSubject(admin.getAdmin_id().toString())
                 .claim("admin_email", admin.getAdminEmail())
