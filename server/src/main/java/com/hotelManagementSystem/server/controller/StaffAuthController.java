@@ -1,6 +1,7 @@
 package com.hotelManagementSystem.server.controller;
 
 import com.hotelManagementSystem.server.dto.StaffAuthDTO;
+import com.hotelManagementSystem.server.dto.StaffLoginDTO;
 import com.hotelManagementSystem.server.service.StaffAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,28 @@ public class StaffAuthController {
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PostMapping("login")
+    public ResponseEntity<Map<String, Object>> login(@RequestBody StaffLoginDTO staffLoginDTO) {
+        Map<String, Object> response = staffAuthService.staffLogin(staffLoginDTO.getStaffMemberNameOrStaffMemberEmail(), staffLoginDTO.getStaffMemberPassword());
+
+        if ((Boolean) response.get("success")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @GetMapping("/checkAuth")
+    public ResponseEntity<Map<String, Object>> checkStaffAuth(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        Map<String, Object> response = staffAuthService.checkStaffAuth(authHeader);
+
+        if ((Boolean) response.get("success")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(401).body(response);
         }
     }
 }

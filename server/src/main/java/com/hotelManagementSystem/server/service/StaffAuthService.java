@@ -15,6 +15,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class StaffAuthService {
@@ -66,6 +67,98 @@ public class StaffAuthService {
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Registration failed: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    public Map<String, Object> staffLogin(String staffMemberNameOrStaffMemberEmail, String password) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+
+            Optional<Staff> staffMemberOpt = staffRepository.findByStaffMemberEmail(staffMemberNameOrStaffMemberEmail);
+            if (staffMemberOpt.isEmpty()) {
+                staffMemberOpt = staffRepository.findByStaffMemberName(staffMemberNameOrStaffMemberEmail);
+            }
+
+            if (staffMemberOpt.isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Staff member not found");
+                return response;
+            }
+
+            Staff staffMember = staffMemberOpt.get();
+
+            if (!passwordEncoder.matches(password, staffMember.getPassword())) {
+                response.put("success", false);
+                response.put("message", "Invalid password");
+                return response;
+            }
+
+            String token = generateToken(staffMember);
+
+            Map<String, Object> staffMemberData = new HashMap<>();
+            staffMemberData.put("staffMemberId", staffMember.getStaffMemberId());
+            staffMemberData.put("staffMemberName", staffMember.getStaffMemberName());
+            staffMemberData.put("staffMemberEmail", staffMember.getStaffMemberEmail());
+            staffMemberData.put("role", staffMember.getRole().toString());
+
+            response.put("success", true);
+            response.put("message", "Login successful");
+            response.put("staffMember", staffMemberData);
+            response.put("token", token);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Login failed: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    public Map<String, Object> checkStaffAuth(String authHeader) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                response.put("success", false);
+                response.put("message", "No valid token provided");
+                return response;
+            }
+
+            String token = authHeader.substring(7);
+            Claims claims = validateToken(token);
+
+            if (claims == null) {
+                response.put("success", false);
+                response.put("message", "Invalid token");
+                return response;
+            }
+
+            Long staffMemberId = Long.valueOf(claims.getSubject());
+            Optional<Staff> staffMemberOpt = staffRepository.findById(staffMemberId);
+
+            if (staffMemberOpt.isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Staff member not found");
+                return response;
+            }
+
+            Staff staffMember = staffMemberOpt.get();
+
+            Map<String, Object> staffMemberData = new HashMap<>();
+            staffMemberData.put("staffMemberId", staffMember.getStaffMemberId());
+            staffMemberData.put("staffMemberName", staffMember.getStaffMemberName());
+            staffMemberData.put("staffMemberEmail", staffMember.getStaffMemberEmail());
+            staffMemberData.put("role", staffMember.getRole().toString());
+
+            response.put("success", true);
+            response.put("staffMember", staffMemberData);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Authentication failed: " + e.getMessage());
         }
 
         return response;
