@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { createRef, useEffect, useRef, useState } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { SoftShadows, Float, CameraControls, Sky, PerformanceMonitor, Text, Box } from "@react-three/drei"
 import { Perf } from "r3f-perf"
@@ -123,7 +123,7 @@ function RoomInfoPanel({ selectedRoom, roomsData }) {
                 <p><span className="font-semibold">Amenities:</span> WiFi, AC, TV, Mini Bar</p>
             </div>
             {room?.available && (
-                <button className="mt-3 w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">
+                <button className="mt-3 w-full bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-600 transition-colors">
                     Book Room
                 </button>
             )}
@@ -210,16 +210,5 @@ export default function App() {
             {/* Room Information Panel */}
             <RoomInfoPanel selectedRoom={selectedRoom} roomsData={roomsData} />
         </div>
-    )
-}
-
-function Sphere({ color = "hotpink", floatIntensity = 15, position = [0, 5, -8], scale = 1 }) {
-    return (
-        <Float floatIntensity={floatIntensity}>
-            <mesh castShadow position={position} scale={scale}>
-                <sphereGeometry />
-                <meshBasicMaterial color={color} roughness={1} />
-            </mesh>
-        </Float>
     )
 }

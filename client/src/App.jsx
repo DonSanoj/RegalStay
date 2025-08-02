@@ -19,6 +19,7 @@ import AdminProtectedRoute from './components/AdminProtectedRoute'
 import AuthenticatedAdmin from './components/AuthenticatedAdmin'
 import AdminLayout from './components/layout/AdminLayout'
 import ViewApartment from './pages/ViewApartment'
+import About from './pages/About'
 
 function App() {
   const { isCheckingAuth, checkAuth } = useAuthStore();
@@ -68,9 +69,11 @@ function App() {
       />
 
       <Route
-        path='/3d-hotel'
+        path='/about-RegalStay'
         element={
-          <ViewApartment />
+          <MainLayout>
+            <About />
+          </MainLayout>
         }
       />
 

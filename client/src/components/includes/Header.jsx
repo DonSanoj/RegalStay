@@ -23,7 +23,7 @@ const Header = () => {
                             Apartment
                         </Link>
                         <Link
-                            to="/about"
+                            to="/about-RegalStay"
                             className="text-white hover:text-green-500 transition-colors duration-300"
                         >
                             About
