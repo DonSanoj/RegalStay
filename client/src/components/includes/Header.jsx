@@ -17,7 +17,7 @@ const Header = () => {
 
                     <div className='ml-10 hidden md:flex space-x-6'>
                         <Link
-                            to="/apartments"
+                            to="/view-apartment"
                             className="text-white hover:text-green-500 transition-colors duration-300"
                         >
                             Apartment

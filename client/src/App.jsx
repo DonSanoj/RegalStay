@@ -67,6 +67,13 @@ function App() {
         }
       />
 
+      <Route
+        path='/3d-hotel'
+        element={
+          <ViewApartment />
+        }
+      />
+
       {/* Auth Pages - Only accessible when not authenticated */}
       <Route
         path='/auth/login'
