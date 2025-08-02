@@ -3,8 +3,11 @@ import { Star } from 'lucide-react';
 import React, { useEffect } from 'react'
 import { FaHotel, FaStar } from 'react-icons/fa6';
 import { IoIosPin } from "react-icons/io";
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         document.title = "RegalStay";
@@ -28,7 +31,10 @@ const HomePage = () => {
                         >
                             Book Now
                         </button>
-                        <button className="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                        <button
+                            className="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                            onClick={() => navigate("/view-apartment")}
+                        >
                             View Apartments
                         </button>
                     </div>

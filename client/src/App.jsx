@@ -18,6 +18,7 @@ import AdminLogin from './pages/auth/AdminLogin'
 import AdminProtectedRoute from './components/AdminProtectedRoute'
 import AuthenticatedAdmin from './components/AuthenticatedAdmin'
 import AdminLayout from './components/layout/AdminLayout'
+import ViewApartment from './pages/ViewApartment'
 
 function App() {
   const { isCheckingAuth, checkAuth } = useAuthStore();
@@ -53,6 +54,15 @@ function App() {
         element={
           <MainLayout>
             <HomePage />
+          </MainLayout>
+        }
+      />
+
+      <Route
+        path='/view-apartment'
+        element={
+          <MainLayout>
+            <ViewApartment />
           </MainLayout>
         }
       />
