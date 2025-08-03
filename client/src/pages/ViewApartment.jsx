@@ -72,6 +72,7 @@ function HotelRoom({ position, roomNumber, isSelected, onSelect, isAvailable = t
 // Hotel building structure
 function HotelBuilding({ selectedRoom, onRoomSelect }) {
     const roomsData = [
+        // First Floor (100s)
         { number: 101, position: [-10, 0, -2], available: true },
         { number: 102, position: [-5, 0, -2], available: true },
         { number: 103, position: [0, 0, -2], available: false },
@@ -82,6 +83,17 @@ function HotelBuilding({ selectedRoom, onRoomSelect }) {
         { number: 108, position: [0, 0, 2], available: true },
         { number: 109, position: [5, 0, 2], available: true },
         { number: 110, position: [10, 0, 2], available: true },
+        // Second Floor (200s)
+        { number: 201, position: [-10, 4, -2], available: true },
+        { number: 202, position: [-5, 4, -2], available: false },
+        { number: 203, position: [0, 4, -2], available: true },
+        { number: 204, position: [5, 4, -2], available: true },
+        { number: 205, position: [10, 4, -2], available: false },
+        { number: 206, position: [-10, 4, 2], available: true },
+        { number: 207, position: [-5, 4, 2], available: true },
+        { number: 208, position: [0, 4, 2], available: false },
+        { number: 209, position: [5, 4, 2], available: true },
+        { number: 210, position: [10, 4, 2], available: true },
     ]
 
     return (
@@ -157,6 +169,17 @@ export default function App() {
         { number: 108, position: [0, 0, 2], available: true },
         { number: 109, position: [5, 0, 2], available: true },
         { number: 110, position: [10, 0, 2], available: true },
+        // Second Floor (200s) - 10 rooms
+        { number: 201, position: [-10, 4, -2], available: true },
+        { number: 202, position: [-5, 4, -2], available: false },
+        { number: 203, position: [0, 4, -2], available: true },
+        { number: 204, position: [5, 4, -2], available: true },
+        { number: 205, position: [10, 4, -2], available: false },
+        { number: 206, position: [-10, 4, 2], available: true },
+        { number: 207, position: [-5, 4, 2], available: true },
+        { number: 208, position: [0, 4, 2], available: false },
+        { number: 209, position: [5, 4, 2], available: true },
+        { number: 210, position: [10, 4, 2], available: true },
     ]
 
     const handleRoomSelect = (roomNumber) => {

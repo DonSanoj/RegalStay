@@ -12,7 +12,7 @@ const About = () => {
 
     return (
         <div className="min-h-screen bg-black text-white p-6">
-            <div className="max-w-6xl mx-auto">
+            <div className=" relative max-w-6xl mx-auto mt-20">
                 {/* <h1 className="text-4xl font-bold text-white mb-2">About RegalStay</h1>
                 <p className="text-gray-300 mb-8">Discover our luxury hotel management system and services</p> */}
                 
