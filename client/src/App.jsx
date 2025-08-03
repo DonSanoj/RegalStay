@@ -34,14 +34,17 @@ function App() {
     };
 
     initializeAuth();
+
+    // Force dark mode by adding 'dark' class to document
+    document.documentElement.classList.add('dark');
   }, [checkAuth]);
 
   if (isCheckingAuth) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-black text-white">
+      <div className="flex h-screen w-full items-center justify-center bg-background text-foreground">
         <div className="text-center">
           <div className="animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full inline-block mb-4"></div>
-          <p className='text-white'>Loading...</p>
+          <p>Loading...</p>
         </div>
       </div>
     );

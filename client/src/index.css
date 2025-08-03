@@ -29,33 +29,49 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem
-  }
+  ;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%}
   .dark {
-    --background: 0 0% 3.9%;
+    --background: 0 0% 0%;          /* Pure black background */
     --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
+    --card: 0 0% 5%;                /* Very dark gray for cards */
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
     --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
+    --secondary: 0 0% 10%;           /* Darker secondary */
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
+    --muted: 0 0% 8%;               /* Darker muted */
     --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
+    --accent: 0 0% 12%;             /* Darker accent */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
+    --border: 0 0% 12%;             /* Darker borders */
+    --input: 0 0% 8%;               /* Darker inputs */
     --ring: 0 0% 83.1%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%
-  }
+  ;
+    --sidebar-background: 0 0% 2%;   /* Almost black sidebar */
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 8%;       /* Darker sidebar accent */
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 0 0% 10%;      /* Darker sidebar border */
+    --sidebar-ring: 217.2 91.2% 59.8%}
 }
 
 @layer base {
@@ -64,5 +80,37 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Custom black theme utilities */
+@layer utilities {
+  .theme-black {
+    --background: 0 0% 0%;
+    --card: 0 0% 3%;
+    --muted: 0 0% 5%;
+    --border: 0 0% 8%;
+  }
+  
+  .dark-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #374151 #111827;
+  }
+  
+  .dark-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .dark-scrollbar::-webkit-scrollbar-track {
+    background: #111827;
+  }
+  
+  .dark-scrollbar::-webkit-scrollbar-thumb {
+    background: #374151;
+    border-radius: 3px;
+  }
+  
+  .dark-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #4b5563;
   }
 }
