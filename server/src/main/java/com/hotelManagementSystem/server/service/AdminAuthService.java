@@ -63,6 +63,7 @@ public class AdminAuthService {
             adminData.put("admin_username", savedAdmin.getAdminUsername());
             adminData.put("admin_email", savedAdmin.getAdminEmail());
             adminData.put("admin_role", savedAdmin.getRole().toString());
+            adminData.put("createdAt", savedAdmin.getCreatedAt());
 
             response.put("success", true);
             response.put("message", "Admin registered successfully");
@@ -107,6 +108,7 @@ public class AdminAuthService {
             adminData.put("admin_username", admin.getAdminUsername());
             adminData.put("admin_email", admin.getAdminEmail());
             adminData.put("admin_role", admin.getRole().toString());
+            adminData.put("createdAt", admin.getCreatedAt());
 
             response.put("success", true);
             response.put("message", "Admin Login successfully");
@@ -155,6 +157,7 @@ public class AdminAuthService {
             adminData.put("admin_username", admin.getAdminUsername());
             adminData.put("admin_email", admin.getAdminEmail());
             adminData.put("admin_role", admin.getRole().toString());
+            adminData.put("createdAt", admin.getCreatedAt());
 
             response.put("success", true);
             response.put("admin", adminData);

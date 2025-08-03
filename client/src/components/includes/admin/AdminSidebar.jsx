@@ -26,53 +26,6 @@ import {
 } from "@/components/ui/sidebar"
 import { useAdminAuthStore } from "@/store/adminAuthStore"
 
-const data = {
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: LayoutDashboardIcon,
-    },
-    {
-      title: "Rooms Management",
-      url: "#",
-      icon: BedDouble,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: BarChartIcon,
-    },
-    {
-      title: "Bookings",
-      url: "#",
-      icon: ListIcon,
-    },
-    {
-      title: "Guests",
-      url: "#",
-      icon: UsersIcon,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: SettingsIcon,
-    },
-    {
-      title: "Contact Developers",
-      url: "#",
-      icon: HeadsetIcon,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: SearchIcon,
-    },
-  ],
-}
-
 export function AdminSidebar({
   ...props
 }) {
@@ -88,7 +41,60 @@ export function AdminSidebar({
         avatar: "/avatars/admin.jpg",
       };
     }
+    return null;
   }, [admin]);
+
+  // Don't render if userData is not available
+  if (!userData) {
+    return null;
+  }
+
+  const data = {
+    navMain: [
+      {
+        title: "Dashboard",
+        url: `/admin/${userData.admin_id}/${encodeURIComponent(userData.email)}`,
+        icon: LayoutDashboardIcon,
+      },
+      {
+        title: "Rooms Management",
+        url: "#",
+        icon: BedDouble,
+      },
+      {
+        title: "Analytics",
+        url: "#",
+        icon: BarChartIcon,
+      },
+      {
+        title: "Bookings",
+        url: "#",
+        icon: ListIcon,
+      },
+      {
+        title: "Guests",
+        url: "#",
+        icon: UsersIcon,
+      },
+    ],
+    navSecondary: [
+      {
+        title: "Settings",
+        url: "#",
+        icon: SettingsIcon,
+      },
+      {
+        title: "Contact Developers",
+        url: "#",
+        icon: HeadsetIcon,
+      },
+      {
+        title: "Search",
+        url: "#",
+        icon: SearchIcon,
+      },
+    ],
+  }
 
   return (
     (<Sidebar collapsible="offcanvas" {...props}>

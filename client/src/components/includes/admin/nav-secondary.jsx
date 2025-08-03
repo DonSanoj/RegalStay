@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react"
+import { useNavigate } from "react-router-dom"
 
 import {
   SidebarGroup,
@@ -13,17 +14,26 @@ export function NavSecondary({
   items,
   ...props
 }) {
+  const navigate = useNavigate()
+
+  const handleNavigation = (url) => {
+    if (url && url !== "#") {
+      navigate(url)
+    }
+  }
+
   return (
     (<SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
+              <SidebarMenuButton 
+                onClick={() => handleNavigation(item.url)}
+                className="cursor-pointer"
+              >
+                <item.icon />
+                <span>{item.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
