@@ -20,6 +20,7 @@ import AuthenticatedAdmin from './components/AuthenticatedAdmin'
 import AdminLayout from './components/layout/AdminLayout'
 import ViewApartment from './pages/ViewApartment'
 import About from './pages/About'
+import AdminAccount from './pages/Admin/AdminAccount'
 
 function App() {
   const { isCheckingAuth, checkAuth } = useAuthStore();
@@ -164,6 +165,17 @@ function App() {
           <AdminProtectedRoute>
             <AdminLayout>
               <AdminDashboard />
+            </AdminLayout>
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/admin/:adminId/:email/account'
+        element={
+          <AdminProtectedRoute>
+            <AdminLayout>
+              <AdminAccount />
             </AdminLayout>
           </AdminProtectedRoute>
         }

@@ -24,13 +24,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useAdminAuthStore } from "@/store/adminAuthStore"
 
 const data = {
-  user: {
-    name: "Hotel Admin",
-    email: "admin@hotel.com",
-    avatar: "/avatars/admin.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -80,6 +76,20 @@ const data = {
 export function AdminSidebar({
   ...props
 }) {
+  const { admin } = useAdminAuthStore();
+
+  // Create user object from admin data with proper admin_id field
+  const userData = React.useMemo(() => {
+    if (admin) {
+      return {
+        name: admin.admin_username,
+        email: admin.admin_email,
+        admin_id: admin.admin_id,
+        avatar: "/avatars/admin.jpg",
+      };
+    }
+  }, [admin]);
+
   return (
     (<Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -99,7 +109,7 @@ export function AdminSidebar({
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>)
   );
