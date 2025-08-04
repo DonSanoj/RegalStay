@@ -2,11 +2,14 @@ package com.hotelManagementSystem.server.controller;
 
 import com.hotelManagementSystem.server.dto.AdminAuthDTO;
 import com.hotelManagementSystem.server.dto.AdminLoginDTO;
+import com.hotelManagementSystem.server.dto.AdminUpdateDTO;
+import com.hotelManagementSystem.server.dto.SecondaryEmailDTO;
 import com.hotelManagementSystem.server.service.AdminAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +52,45 @@ public class AdminAuthController {
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(401).body(response);
+        }
+    }
+
+    @PutMapping("/update-profile")
+    public ResponseEntity<Map<String, Object>> updateProfile(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @RequestBody AdminUpdateDTO adminUpdateDTO) {
+        Map<String, Object> response = adminAuthService.updateAdminProfile(authHeader, adminUpdateDTO);
+
+        if ((Boolean) response.get("success")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PutMapping("/update-profile-image")
+    public ResponseEntity<Map<String, Object>> updateProfileImage(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @RequestParam("profileImage") MultipartFile profileImage) {
+        Map<String, Object> response = adminAuthService.updateAdminProfileImage(authHeader, profileImage);
+
+        if ((Boolean) response.get("success")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PostMapping("/add-secondary-email")
+    public ResponseEntity<Map<String, Object>> addSecondaryEmail(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @RequestBody SecondaryEmailDTO secondaryEmailDTO) {
+        Map<String, Object> response = adminAuthService.addSecondaryEmail(authHeader, secondaryEmailDTO);
+
+        if ((Boolean) response.get("success")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
         }
     }
 }

@@ -25,6 +25,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/admin/auth/**").permitAll()
                     .requestMatchers("/api/staff/auth/**").permitAll()
+                    .requestMatchers("/images/**").permitAll()  // Allow access to uploaded images
                     .anyRequest().authenticated()
             );
         

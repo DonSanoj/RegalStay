@@ -108,4 +108,38 @@ export const adminAuthService = {
         localStorage.removeItem("isAdminAuthenticated");
         localStorage.removeItem("adminData");
     },
+
+    updateAdminProfile: async (adminData) => {
+        try {
+            const response = await api.put("/api/admin/auth/update-profile", adminData);
+            return response.data;
+        } catch (error) {
+            const errorData = error.response?.data || { message: "Network error occurred" };
+            throw errorData;
+        }
+    },
+
+    updateAdminProfileImage: async (formData) => {
+        try {
+            const response = await api.put("/api/admin/auth/update-profile-image", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return response.data;
+        } catch (error) {
+            const errorData = error.response?.data || { message: "Network error occurred" };
+            throw errorData;
+        }
+    },
+
+    addSecondaryEmail: async (emailData) => {
+        try {
+            const response = await api.post("/api/admin/auth/add-secondary-email", emailData);
+            return response.data;
+        } catch (error) {
+            const errorData = error.response?.data || { message: "Network error occurred" };
+            throw errorData;
+        }
+    }
 };

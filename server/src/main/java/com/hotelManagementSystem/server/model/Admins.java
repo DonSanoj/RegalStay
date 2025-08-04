@@ -27,6 +27,12 @@ public class Admins {
     @Column(nullable = false)
     private String adminPassword;
 
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+
+    @Column(name = "secondary_emails")
+    private String secondaryEmails; // JSON string to store multiple emails
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AdminRole role = AdminRole.ADMIN;

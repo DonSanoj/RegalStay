@@ -129,5 +129,71 @@ export const useAdminAuthStore = create((set, get) => ({
     // Clear admin errors
     clearAdminError: () => {
         set({ adminError: null });
+    },
+
+    updateAdminProfile: async (adminData) => {
+        set({ isAdminLoading: true, adminError: null });
+        try {
+            const response = await adminAuthService.updateAdminProfile(adminData);
+            if (response.success) {
+                set((state) => ({
+                    admin: { ...state.admin, ...response.admin },
+                    isAdminLoading: false,
+                }));
+                return response;
+            } else {
+                throw new Error(response.message || 'Profile update failed');
+            }
+        } catch (error) {
+            set({
+                adminError: error.message || "Error updating profile",
+                isAdminLoading: false,
+            });
+            throw error;
+        }
+    },
+
+    updateAdminProfileImage: async (formData) => {
+        set({ isAdminLoading: true, adminError: null });
+        try {
+            const response = await adminAuthService.updateAdminProfileImage(formData);
+            if (response.success) {
+                set((state) => ({
+                    admin: { ...state.admin, profileImage: response.profileImageUrl },
+                    isAdminLoading: false,
+                }));
+                return response;
+            } else {
+                throw new Error(response.message || 'Profile image update failed');
+            }
+        } catch (error) {
+            set({
+                adminError: error.message || "Error updating profile image",
+                isAdminLoading: false,
+            });
+            throw error;
+        }
+    },
+
+    addSecondaryEmail: async (emailData) => {
+        set({ isAdminLoading: true, adminError: null });
+        try {
+            const response = await adminAuthService.addSecondaryEmail(emailData);
+            if (response.success) {
+                set((state) => ({
+                    admin: { ...state.admin, secondaryEmails: [...(state.admin.secondaryEmails || []), emailData.secondaryEmail] },
+                    isAdminLoading: false,
+                }));
+                return response;
+            } else {
+                throw new Error(response.message || 'Adding secondary email failed');
+            }
+        } catch (error) {
+            set({
+                adminError: error.message || "Error adding secondary email",
+                isAdminLoading: false,
+            });
+            throw error;
+        }
     }
 }));

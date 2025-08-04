@@ -9,8 +9,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hotelManagementSystem.server.dto.AdminAuthDTO;
+import com.hotelManagementSystem.server.dto.AdminUpdateDTO;
+import com.hotelManagementSystem.server.dto.SecondaryEmailDTO;
 import com.hotelManagementSystem.server.model.Admins;
 import com.hotelManagementSystem.server.repository.AdminsRepository;
 
@@ -24,6 +27,9 @@ public class AdminAuthService {
 
     @Autowired
     private AdminsRepository adminsRepository;
+
+    @Autowired
+    private FileUploadService fileUploadService;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     // Use the same JWT secret pattern as AuthService for consistency
@@ -158,12 +164,204 @@ public class AdminAuthService {
             adminData.put("admin_email", admin.getAdminEmail());
             adminData.put("admin_role", admin.getRole().toString());
             adminData.put("createdAt", admin.getCreatedAt());
+            adminData.put("profileImage", admin.getProfileImageUrl());
 
             response.put("success", true);
             response.put("admin", adminData);
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Authentication failed: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    public Map<String, Object> updateAdminProfile(String authHeader, AdminUpdateDTO adminUpdateDTO) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Validate token and get admin
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                response.put("success", false);
+                response.put("message", "No valid token provided");
+                return response;
+            }
+
+            String adminToken = authHeader.substring(7);
+            Claims claims = validateAdminToken(adminToken);
+
+            if (claims == null) {
+                response.put("success", false);
+                response.put("message", "Invalid token");
+                return response;
+            }
+
+            Long adminId = Long.valueOf(claims.getSubject());
+            Optional<Admins> adminOpt = adminsRepository.findById(adminId);
+
+            if (adminOpt.isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Admin not found");
+                return response;
+            }
+
+            Admins admin = adminOpt.get();
+
+            // Update fields
+            if (adminUpdateDTO.getAdminUsername() != null && !adminUpdateDTO.getAdminUsername().trim().isEmpty()) {
+                // Check if username already exists (excluding current admin)
+                Optional<Admins> existingAdmin = adminsRepository.findByAdminUsername(adminUpdateDTO.getAdminUsername());
+                if (existingAdmin.isPresent() && !existingAdmin.get().getAdmin_id().equals(adminId)) {
+                    response.put("success", false);
+                    response.put("message", "Username already exists");
+                    return response;
+                }
+                admin.setAdminUsername(adminUpdateDTO.getAdminUsername());
+            }
+
+            if (adminUpdateDTO.getAdminPassword() != null && !adminUpdateDTO.getAdminPassword().trim().isEmpty()) {
+                admin.setAdminPassword(passwordEncoder.encode(adminUpdateDTO.getAdminPassword()));
+            }
+
+            Admins updatedAdmin = adminsRepository.save(admin);
+
+            // Prepare response data
+            Map<String, Object> adminData = new HashMap<>();
+            adminData.put("admin_id", updatedAdmin.getAdmin_id());
+            adminData.put("admin_username", updatedAdmin.getAdminUsername());
+            adminData.put("admin_email", updatedAdmin.getAdminEmail());
+            adminData.put("admin_role", updatedAdmin.getRole().toString());
+            adminData.put("createdAt", updatedAdmin.getCreatedAt());
+            adminData.put("profileImage", updatedAdmin.getProfileImageUrl());
+
+            response.put("success", true);
+            response.put("message", "Profile updated successfully");
+            response.put("admin", adminData);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Profile update failed: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    public Map<String, Object> updateAdminProfileImage(String authHeader, MultipartFile profileImage) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Validate token and get admin
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                response.put("success", false);
+                response.put("message", "No valid token provided");
+                return response;
+            }
+
+            String adminToken = authHeader.substring(7);
+            Claims claims = validateAdminToken(adminToken);
+
+            if (claims == null) {
+                response.put("success", false);
+                response.put("message", "Invalid token");
+                return response;
+            }
+
+            Long adminId = Long.valueOf(claims.getSubject());
+            Optional<Admins> adminOpt = adminsRepository.findById(adminId);
+
+            if (adminOpt.isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Admin not found");
+                return response;
+            }
+
+            Admins admin = adminOpt.get();
+
+            // Delete old profile image if exists
+            if (admin.getProfileImageUrl() != null) {
+                fileUploadService.deleteProfileImage(admin.getProfileImageUrl());
+            }
+
+            // Upload new profile image
+            String imageUrl = fileUploadService.uploadProfileImage(profileImage, adminId.toString());
+            admin.setProfileImageUrl(imageUrl);
+
+            Admins updatedAdmin = adminsRepository.save(admin);
+
+            response.put("success", true);
+            response.put("message", "Profile image updated successfully");
+            response.put("profileImageUrl", updatedAdmin.getProfileImageUrl());
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Profile image update failed: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    public Map<String, Object> addSecondaryEmail(String authHeader, SecondaryEmailDTO secondaryEmailDTO) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Validate token and get admin
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                response.put("success", false);
+                response.put("message", "No valid token provided");
+                return response;
+            }
+
+            String adminToken = authHeader.substring(7);
+            Claims claims = validateAdminToken(adminToken);
+
+            if (claims == null) {
+                response.put("success", false);
+                response.put("message", "Invalid token");
+                return response;
+            }
+
+            Long adminId = Long.valueOf(claims.getSubject());
+            Optional<Admins> adminOpt = adminsRepository.findById(adminId);
+
+            if (adminOpt.isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Admin not found");
+                return response;
+            }
+
+            Admins admin = adminOpt.get();
+
+            // Check if email already exists as primary email
+            if (adminsRepository.findByAdminEmail(secondaryEmailDTO.getSecondaryEmail()).isPresent()) {
+                response.put("success", false);
+                response.put("message", "Email already exists as primary email");
+                return response;
+            }
+
+            // Add secondary email (simple approach - store as comma-separated string)
+            String currentSecondaryEmails = admin.getSecondaryEmails();
+            String newSecondaryEmail = secondaryEmailDTO.getSecondaryEmail();
+
+            if (currentSecondaryEmails == null || currentSecondaryEmails.isEmpty()) {
+                admin.setSecondaryEmails(newSecondaryEmail);
+            } else {
+                // Check if email already exists in secondary emails
+                if (currentSecondaryEmails.contains(newSecondaryEmail)) {
+                    response.put("success", false);
+                    response.put("message", "Email already exists in secondary emails");
+                    return response;
+                }
+                admin.setSecondaryEmails(currentSecondaryEmails + "," + newSecondaryEmail);
+            }
+
+            adminsRepository.save(admin);
+
+            response.put("success", true);
+            response.put("message", "Secondary email added successfully");
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Adding secondary email failed: " + e.getMessage());
         }
 
         return response;

@@ -3,11 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAdminAuthStore } from '@/store/adminAuthStore'
+import { toast } from 'sonner'
 import React, { useEffect, useState } from 'react'
 
 const AdminAccount = () => {
 
-    const { admin } = useAdminAuthStore();
+    const { admin, isAdminLoading, updateAdminProfile, updateAdminProfileImage, addSecondaryEmail } = useAdminAuthStore();
 
     const formatDate = (dateString) => {
         if (!dateString) return 'Not available';
@@ -25,23 +26,47 @@ const AdminAccount = () => {
     };
 
     const [formData, setFormData] = useState({
-        email: admin.admin_email,
-        name: admin.admin_username || '',
+        email: admin?.admin_email || '',
+        name: admin?.admin_username || '',
         password: '',
-        secondaryEmail: ''
+        secondaryEmail: '',
+        profileImage: null
     });
 
     const [profileImagePreview, setProfileImagePreview] = useState(null);
 
     useEffect(() => {
-        document.title = `${admin.admin_username} Information`
-    }, [admin.admin_username]);
+        document.title = `${admin?.admin_username || 'Admin'} Information`
+    }, [admin?.admin_username]);
+
+    useEffect(() => {
+        if (admin) {
+            setFormData(prev => ({
+                ...prev,
+                email: admin.admin_email || '',
+                name: admin.admin_username || ''
+            }));
+        }
+    }, [admin]);
 
     const handleInputChange = (e) => {
         const { id, value, files } = e.target;
         
         if (id === 'profileImage' && files && files[0]) {
             const file = files[0];
+            
+            // Validate file size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error("File size must be less than 5MB");
+                return;
+            }
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                toast.error("Please select a valid image file");
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onload = (e) => {
                 setProfileImagePreview(e.target.result);
@@ -62,10 +87,87 @@ const AdminAccount = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (!formData.name.trim()) {
+            toast.error("Name is required");
+            return;
+        }
+
+        try {
+            const updateData = {
+                adminUsername: formData.name,
+                ...(formData.password && { adminPassword: formData.password })
+            };
+
+            const response = await updateAdminProfile(updateData);
+            
+            if (response.success) {
+                toast.success("Profile updated successfully!");
+                setFormData(prev => ({ ...prev, password: '' })); // Clear password field
+            }
+        } catch (error) {
+            console.error("Profile update error:", error);
+            toast.error(error.message || "Failed to update profile");
+        }
     };
 
     const handleProfileSubmit = async (e) => {
         e.preventDefault();
+        
+        if (!formData.profileImage) {
+            toast.error("Please select an image first");
+            return;
+        }
+
+        try {
+            const formDataToSend = new FormData();
+            formDataToSend.append('profileImage', formData.profileImage);
+
+            const response = await updateAdminProfileImage(formDataToSend);
+            
+            if (response.success) {
+                toast.success("Profile image updated successfully!");
+                setProfileImagePreview(null);
+                setFormData(prev => ({ ...prev, profileImage: null }));
+                
+                // Reset file input
+                const fileInput = document.getElementById('profileImage');
+                if (fileInput) fileInput.value = '';
+            }
+        } catch (error) {
+            console.error("Profile image update error:", error);
+            toast.error(error.message || "Failed to update profile image");
+        }
+    };
+
+    const handleSecondaryEmailSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!formData.secondaryEmail.trim()) {
+            toast.error("Please enter a secondary email");
+            return;
+        }
+
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.secondaryEmail)) {
+            toast.error("Please enter a valid email address");
+            return;
+        }
+
+        try {
+            const response = await addSecondaryEmail({
+                secondaryEmail: formData.secondaryEmail
+            });
+            
+            if (response.success) {
+                toast.success("Secondary email added successfully!");
+                setFormData(prev => ({ ...prev, secondaryEmail: '' }));
+            }
+        } catch (error) {
+            console.error("Secondary email error:", error);
+            toast.error(error.message || "Failed to add secondary email");
+        }
     };
 
     return (
@@ -81,7 +183,7 @@ const AdminAccount = () => {
                             </div>
                             <div>
                                 <p className=' text-gray-500 text-sm'>
-                                    Created at: {formatDate(admin.createdAt)}</p>
+                                    Created at: {formatDate(admin?.createdAt)}</p>
                             </div>
                         </div>
                     </CardTitle>
@@ -97,7 +199,7 @@ const AdminAccount = () => {
                                         <Input
                                             id="email"
                                             type="email"
-                                            placeholder={`${admin.admin_email}`}
+                                            placeholder={`${admin?.admin_email || ''}`}
                                             value={formData.email}
                                             onChange={handleInputChange}
                                             className=" border-gray-700 text-white placeholder:text-white"
@@ -113,31 +215,34 @@ const AdminAccount = () => {
                                         <Input
                                             id="name"
                                             type="text"
-                                            placeholder={`${admin.admin_username}`}
+                                            placeholder={`${admin?.admin_username || ''}`}
                                             value={formData.name}
                                             onChange={handleInputChange}
                                             className=" border-gray-700 text-white placeholder:text-gray-400"
+                                            required
                                         />
                                     </div>
 
                                     <div className=' grid gap-3'>
-                                        <div className=' grid gap-3'>
-
-                                        </div>
                                         <Label htmlFor="password" className="text-gray-300">Password</Label>
                                         <Input
                                             id="password"
                                             type="password"
-                                            placeholder="Enter new password"
+                                            placeholder="Enter new password (leave blank to keep current)"
                                             value={formData.password}
                                             onChange={handleInputChange}
                                             className=" border-gray-700 text-white placeholder:text-gray-400"
                                         />
+                                        <p className="text-xs text-gray-500">Leave blank if you don't want to change password</p>
                                     </div>
 
                                     <div className=' grid gap-3'>
-                                        <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 hover:text-white">
-                                            Update Account
+                                        <Button 
+                                            type="submit" 
+                                            className="w-full bg-green-500 hover:bg-green-600 hover:text-white"
+                                            disabled={isAdminLoading}
+                                        >
+                                            {isAdminLoading ? "Updating..." : "Update Account"}
                                         </Button>
                                     </div>
                                 </div>
@@ -158,9 +263,15 @@ const AdminAccount = () => {
                                                         alt="Profile Preview" 
                                                         className='w-full h-full object-cover'
                                                     />
+                                                ) : admin?.profileImage ? (
+                                                    <img 
+                                                        src={`${import.meta.env.VITE_API_URL || "http://localhost:8080"}${admin.profileImage}`} 
+                                                        alt="Current Profile" 
+                                                        className='w-full h-full object-cover'
+                                                    />
                                                 ) : (
                                                     <span className='text-4xl font-bold text-gray-300'>
-                                                        {admin.admin_username ? admin.admin_username.charAt(0).toUpperCase() : 'A'}
+                                                        {admin?.admin_username ? admin.admin_username.charAt(0).toUpperCase() : 'A'}
                                                     </span>
                                                 )}
                                             </div>
@@ -180,8 +291,12 @@ const AdminAccount = () => {
                                     </div>
 
                                     <div className=' grid gap-3'>
-                                        <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 hover:text-white">
-                                            Update Profile Image
+                                        <Button 
+                                            type="submit" 
+                                            className="w-full bg-green-500 hover:bg-green-600 hover:text-white"
+                                            disabled={isAdminLoading}
+                                        >
+                                            {isAdminLoading ? "Updating..." : "Update Profile Image"}
                                         </Button>
                                     </div>
                                 </div>
@@ -196,25 +311,32 @@ const AdminAccount = () => {
                     <CardTitle className="text-green-500 text-base">Add secondary email</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className=' flex flex-col gap-4'>
-                        <div className=' grid gap-3'>
-                            <Label htmlFor="secondaryEmail" className="text-gray-300">Secondary Email</Label>
-                            <Input
-                                id="secondaryEmail"
-                                type="email"
-                                placeholder="Enter secondary email"
-                                value={formData.secondaryEmail}
-                                onChange={handleInputChange}
-                                className=" border-gray-700 text-white placeholder:text-gray-400"
-                            />
-                        </div>
+                    <form onSubmit={handleSecondaryEmailSubmit}>
+                        <div className=' flex flex-col gap-4'>
+                            <div className=' grid gap-3'>
+                                <Label htmlFor="secondaryEmail" className="text-gray-300">Secondary Email</Label>
+                                <Input
+                                    id="secondaryEmail"
+                                    type="email"
+                                    placeholder="Enter secondary email"
+                                    value={formData.secondaryEmail}
+                                    onChange={handleInputChange}
+                                    className=" border-gray-700 text-white placeholder:text-gray-400"
+                                    required
+                                />
+                            </div>
 
-                        <div className=' grid gap-3'>
-                            <Button type="submit" className=" w-1/3 ml-auto bg-green-500 hover:bg-green-600 hover:text-white">
-                                Add Secondary Email
-                            </Button>
+                            <div className=' grid gap-3'>
+                                <Button 
+                                    type="submit" 
+                                    className=" w-1/3 ml-auto bg-green-500 hover:bg-green-600 hover:text-white"
+                                    disabled={isAdminLoading}
+                                >
+                                    {isAdminLoading ? "Adding..." : "Add Secondary Email"}
+                                </Button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </CardContent>
             </Card>
         </div>
