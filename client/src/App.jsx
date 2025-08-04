@@ -11,9 +11,12 @@ import MainLayout from './components/layout/MainLayout'
 import Login from './pages/auth/Login'
 import Signup from './pages/auth/Signup'
 import StaffLogin from './pages/auth/StaffLogin'
+import StaffSignup from './pages/auth/StaffSignup'
 import { useAuthStore } from './store/authStore'
 import { AuthenticatedUser } from './components/AuthenticatedUser'
 import ProtectedRoute from './components/ProtectedRoute'
+import StaffProtectedRoute from './components/StaffProtectedRoute'
+import AuthenticatedStaff from './components/AuthenticatedStaff'
 import AdminLogin from './pages/auth/AdminLogin'
 import AdminProtectedRoute from './components/AdminProtectedRoute'
 import AuthenticatedAdmin from './components/AuthenticatedAdmin'
@@ -107,7 +110,18 @@ function App() {
       <Route
         path='/secure-auth/staff-login'
         element={
-          <StaffLogin />
+          <AuthenticatedStaff>
+            <StaffLogin />
+          </AuthenticatedStaff>
+        }
+      />
+
+      <Route
+        path='/secure-auth/staff-signup'
+        element={
+          <AuthenticatedStaff>
+            <StaffSignup />
+          </AuthenticatedStaff>
         }
       />
 
@@ -134,27 +148,27 @@ function App() {
       <Route
         path='/housekeeper'
         element={
-          <ProtectedRoute requiredRole="HOUSEKEEPER">
+          <StaffProtectedRoute requiredRole="HOUSEKEEPER">
             <HousekeeperDashboard />
-          </ProtectedRoute>
+          </StaffProtectedRoute>
         }
       />
 
       <Route
         path='/receptionist'
         element={
-          <ProtectedRoute requiredRole="RECEPTIONIST">
+          <StaffProtectedRoute requiredRole="RECEPTIONIST">
             <ReceptionistDashboard />
-          </ProtectedRoute>
+          </StaffProtectedRoute>
         }
       />
 
       <Route
         path='/manager'
         element={
-          <ProtectedRoute requiredRole="MANAGER">
+          <StaffProtectedRoute requiredRole="MANAGER">
             <ManagerDashboard />
-          </ProtectedRoute>
+          </StaffProtectedRoute>
         }
       />
 
