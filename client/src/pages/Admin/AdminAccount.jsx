@@ -36,7 +36,7 @@ const AdminAccount = () => {
     const [profileImagePreview, setProfileImagePreview] = useState(null);
 
     useEffect(() => {
-        document.title = `${admin?.admin_username || 'Admin'} Information`
+        document.title = `${admin?.admin_username} Information`
     }, [admin?.admin_username]);
 
     useEffect(() => {

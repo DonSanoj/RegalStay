@@ -62,6 +62,11 @@ export function AdminSidebar({
         icon: BedDouble,
       },
       {
+        title: "Staff Management",
+        url: "#",
+        icon: UsersIcon,
+      },
+      {
         title: "Analytics",
         url: "#",
         icon: BarChartIcon,
@@ -102,7 +107,7 @@ export function AdminSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-              <a href="#">
+              <a href={`/admin/${userData.admin_id}/${encodeURIComponent(userData.email)}`}>
                 <HotelIcon className="h-5 w-5" />
                 <span className="text-green-500 text-base font-semibold">RegalStay</span><span className="text-white text-base font-semibold">Hotel</span>
               </a>
