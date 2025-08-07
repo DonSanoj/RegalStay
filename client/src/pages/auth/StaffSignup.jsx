@@ -27,7 +27,7 @@ const StaffSignup = () => {
             ...prev,
             [id]: value
         }));
-        
+
         // Clear any existing errors when user starts typing
         if (staffError) {
             clearStaffError();
@@ -45,7 +45,7 @@ const StaffSignup = () => {
             ...prev,
             role: value
         }));
-        
+
         if (staffError) {
             clearStaffError();
         }
@@ -72,7 +72,7 @@ const StaffSignup = () => {
 
     useEffect(() => {
         document.title = "Staff Signup | RegalStay";
-        
+
         // Clear any errors when component mounts
         return () => {
             clearStaffError();
@@ -98,7 +98,7 @@ const StaffSignup = () => {
                                             {staffError}
                                         </div>
                                     )}
-                                    
+
                                     <div className='grid gap-3'>
                                         <Label htmlFor="email" className="text-gray-300">Email</Label>
                                         <Input
@@ -134,9 +134,14 @@ const StaffSignup = () => {
                                                 <SelectValue placeholder="Select staff role" />
                                             </SelectTrigger>
                                             <SelectContent className="bg-gray-800 border-gray-700">
+                                                <SelectItem value="MANAGER" className="text-white hover:bg-gray-700">Manager</SelectItem>
+                                                <SelectItem value="FINANCE" className="text-white hover:bg-gray-700">Finance</SelectItem>
+                                                <SelectItem value="HR" className="text-white hover:bg-gray-700">HR</SelectItem>
+                                                <SelectItem value="CHEF" className="text-white hover:bg-gray-700">Chef</SelectItem>
+                                                <SelectItem value="SERVICE" className="text-white hover:bg-gray-700">Service</SelectItem>
+                                                <SelectItem value="MAINTENANCE" className="text-white hover:bg-gray-700">Maintenance</SelectItem>
                                                 <SelectItem value="RECEPTIONIST" className="text-white hover:bg-gray-700">Receptionist</SelectItem>
                                                 <SelectItem value="HOUSEKEEPER" className="text-white hover:bg-gray-700">Housekeeper</SelectItem>
-                                                <SelectItem value="MANAGER" className="text-white hover:bg-gray-700">Manager</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -177,11 +182,11 @@ const StaffSignup = () => {
                                         <Button
                                             type="submit"
                                             disabled={
-                                                isStaffLoading || 
-                                                !formData.email || 
-                                                !formData.username || 
-                                                !formData.password || 
-                                                !formData.confirmPassword || 
+                                                isStaffLoading ||
+                                                !formData.email ||
+                                                !formData.username ||
+                                                !formData.password ||
+                                                !formData.confirmPassword ||
                                                 !formData.role ||
                                                 !passwordsMatch
                                             }
