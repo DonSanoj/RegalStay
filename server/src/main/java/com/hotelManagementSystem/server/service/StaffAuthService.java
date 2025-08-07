@@ -57,7 +57,7 @@ public class StaffAuthService {
             staffMemberData.put("staffMemberId", savedStaffMember.getStaffMemberId());
             staffMemberData.put("staffMemberName", savedStaffMember.getStaffMemberName());
             staffMemberData.put("staffMemberEmail", savedStaffMember.getStaffMemberEmail());
-            staffMemberData.put("role", savedStaffMember.getRole().toString());
+            staffMemberData.put("role", savedStaffMember.getRole());
 
             response.put("success", true);
             response.put("message", "Staff member registered successfully");
@@ -103,7 +103,7 @@ public class StaffAuthService {
             staffMemberData.put("staffMemberId", staffMember.getStaffMemberId());
             staffMemberData.put("staffMemberName", staffMember.getStaffMemberName());
             staffMemberData.put("staffMemberEmail", staffMember.getStaffMemberEmail());
-            staffMemberData.put("role", staffMember.getRole().toString());
+            staffMemberData.put("role", staffMember.getRole());
 
             response.put("success", true);
             response.put("message", "Login successful");
@@ -152,7 +152,7 @@ public class StaffAuthService {
             staffMemberData.put("staffMemberId", staffMember.getStaffMemberId());
             staffMemberData.put("staffMemberName", staffMember.getStaffMemberName());
             staffMemberData.put("staffMemberEmail", staffMember.getStaffMemberEmail());
-            staffMemberData.put("role", staffMember.getRole().toString());
+            staffMemberData.put("role", staffMember.getRole());
 
             response.put("success", true);
             response.put("staffMember", staffMemberData);
@@ -169,7 +169,7 @@ public class StaffAuthService {
                 .setSubject(staffMember.getStaffMemberId().toString())
                 .claim("staffMemberEmail", staffMember.getStaffMemberEmail())
                 .claim("staffMemberName", staffMember.getStaffMemberName())
-                .claim("role", staffMember.getRole().toString())
+                .claim("role", staffMember.getRole())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(jwtSecret)
